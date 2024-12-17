@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,21 +62,21 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     // Navigation Component
-    implementation("androidx.navigation:navigation-compose:2.7.0")  // Corrected here
+    implementation("androidx.navigation:navigation-compose:2.8.5")  // Corrected here
 
     // Room components
     implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
     // Lifecycle components
-    implementation("androidx.lifecycle:lifecycle-extensions:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
     // Kotlin components
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }
