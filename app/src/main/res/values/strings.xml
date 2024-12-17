@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">KPZ Parcel</string>
+    <string name="admin_login">Admin Login</string>
+    <string name="user_login">User Login</string>
+    <string name="admin_page">Admin Page</string>
+    <string name="user_page">User Page</string>
+    <string name="add_parcel">Add Parcel</string>
+    <string name="back_button">Back</string>
+
+
 </resources>

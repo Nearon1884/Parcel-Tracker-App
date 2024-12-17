@@ -55,7 +55,9 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 
 @Composable
-fun AdminLoginForm() {
+fun AdminLoginForm(
+    PageAdmin: () -> Unit = {},
+) {
     Surface {
         var credentials by remember { mutableStateOf(Credentials()) }
         val context = LocalContext.current
@@ -111,7 +113,10 @@ fun AdminLoginForm() {
 
             Button(
                 onClick = {
-                    if (!checkCredentials(credentials, context)) credentials = Credentials()
+                    if (!checkCredentials(credentials, context) == false){
+                        credentials = Credentials()
+                        PageAdmin()
+                    }
                 },
                 enabled = credentials.isNotEmpty(),
                 shape = RoundedCornerShape(5.dp),
@@ -120,16 +125,12 @@ fun AdminLoginForm() {
                 Text("Login")
             }
 
-
         }
     }
 }
 
 fun checkCredentials(creds: Credentials, context: Context): Boolean {
     if (creds.isNotEmpty() && creds.login == "admin" && creds.pwd == "abc123") { //Set Password
-
-        //Navigation to AdminPage
-
         return true
     } else {
         Toast.makeText(context, "Wrong Credentials", Toast.LENGTH_SHORT).show()

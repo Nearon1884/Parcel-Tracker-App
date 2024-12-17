@@ -41,7 +41,7 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 
 @Composable
-fun UserPage(name: String, modifier: Modifier = Modifier) {
+fun UserPage() {
     val offset2 = Offset(15.0f, 8.0f)
     val image1 = painterResource(R.drawable.parcel)
     val image2 = painterResource(R.drawable.parcel2)
@@ -113,17 +113,6 @@ fun UserPage(name: String, modifier: Modifier = Modifier) {
 
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                //Navigate to UserLogin
-            },
-            shape = RoundedCornerShape(5.dp),
-        ) {
-            Text("Back")
-        }
-
     }
 }
 
@@ -131,6 +120,6 @@ fun UserPage(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     KPZParcelTheme {
-        UserPage("Android")
+        UserPage()
     }
 }

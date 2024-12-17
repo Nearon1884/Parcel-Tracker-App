@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -45,7 +47,10 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 
 @Composable
-fun UserLoginForm() {
+fun UserLoginForm(
+    LoginAdmin: () -> Unit = {},
+    PageUser: () -> Unit = {},
+) {
     Surface {
         var trackNum by remember { mutableStateOf(TrackNum()) }
         val context = LocalContext.current
@@ -106,7 +111,10 @@ fun UserLoginForm() {
 
             Button(
                 onClick = {
-                    if (!checkTrackingNum(trackNum, context)) trackNum = TrackNum()
+                    if (!checkTrackingNum(trackNum, context) == false){
+                        trackNum = TrackNum()
+                        PageUser()
+                    }
                 },
                 enabled = trackNum.isNotEmpty(),
                 shape = RoundedCornerShape(5.dp),
@@ -117,26 +125,20 @@ fun UserLoginForm() {
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            Button(
-                onClick = {
+            AdminButton(
+                onClick = LoginAdmin
+            )
 
-                //Navigate to AdminLogin
 
-                },
-                shape = RoundedCornerShape(5.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Login as Admin")
-            }
         }
     }
 }
 
-fun checkTrackingNum(num: TrackNum, context: Context): Boolean {
+fun checkTrackingNum(
+    num: TrackNum,
+    context: Context
+): Boolean {
     if (num.isNotEmpty() && num.code == "admin") {
-
-        //Navigate to UserPage
-
         return true
     } else {
         Toast.makeText(context, "Wrong Credentials", Toast.LENGTH_SHORT).show()
@@ -177,6 +179,21 @@ fun TrackingNumberField(
         visualTransformation = VisualTransformation.None
     )
 }
+
+@Composable
+fun AdminButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(5.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Login as Admin")
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
