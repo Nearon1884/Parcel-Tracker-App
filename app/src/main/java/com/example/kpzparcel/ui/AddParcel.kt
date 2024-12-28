@@ -22,13 +22,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
+import com.example.kpzparcel.viewmodel.ParcelViewModel
+import com.example.kpzparcel.data.Parcel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun AddParcelForm() {
+fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
     // Variables for user input
     var customerName by remember { mutableStateOf("") }
     var trackingNumber by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var errorMessage by remember { mutableStateOf("") } // To hold validation error messages
 
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -109,27 +113,37 @@ fun AddParcelForm() {
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Error Message
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = TextStyle(fontSize = 14.sp),
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
             // Submit Button
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    // Handle form submission logic
-                    println("Customer Name: $customerName")
-                    println("Tracking Number: $trackingNumber")
-                    println("Image URI: $selectedImageUri")
+                    // Form validation
+                    if (customerName.isBlank() || trackingNumber.isBlank()) {
+                        errorMessage = "Please fill in all fields."
+                    } else {
+                        errorMessage = ""
+                        val parcel = Parcel(
+                            trackingNumber = trackingNumber,
+                            customerName = customerName,
+                            imageUrl = selectedImageUri?.toString() ?: ""
+                        )
+                        viewModel.addParcel(parcel)  // Save to database
+                    }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Submit")
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddParcelPreview() {
-    KPZParcelTheme {
-        AddParcelForm()
     }
 }

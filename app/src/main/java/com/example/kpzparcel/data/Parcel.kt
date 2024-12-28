@@ -8,6 +8,5 @@ import java.util.Date
 data class Parcel(
     @PrimaryKey val trackingNumber: String,
     val customerName: String,
-    val date: Date,
     val imageUrl: String
 )
