@@ -46,13 +46,21 @@ import androidx.compose.ui.unit.sp
 import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 
+data class TrackNum(
+    var code: String = ""  // This represents the tracking number.
+) {
+    fun isNotEmpty(): Boolean {
+        return code.isNotEmpty()
+    }
+}
+
 @Composable
 fun UserLoginForm(
     LoginAdmin: () -> Unit = {},
-    PageUser: () -> Unit = {},
+    PageUser: (String) -> Unit = {}, // Modify to accept trackingNumber as a parameter
 ) {
     Surface {
-        var trackNum by remember { mutableStateOf(TrackNum()) }
+        var trackNum by remember { mutableStateOf(TrackNum()) } // State for the tracking number
         val context = LocalContext.current
         val image1 = painterResource(R.drawable.box)
 
@@ -63,11 +71,9 @@ fun UserLoginForm(
                 .fillMaxSize()
                 .padding(horizontal = 30.dp)
         ) {
-
             Text(
                 text = "KPZ Parcel Management System",
                 textAlign = TextAlign.Center,
-
                 style = TextStyle(
                     fontSize = 50.sp,
                     fontFamily = FontFamily.SansSerif,
@@ -90,7 +96,6 @@ fun UserLoginForm(
             Text(
                 text = "Enter your tracking number",
                 textAlign = TextAlign.Center,
-
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = FontFamily.SansSerif,
@@ -101,6 +106,7 @@ fun UserLoginForm(
                 modifier = Modifier.padding(10.dp)
             )
 
+            // Tracking number input field
             TrackingNumberField(
                 value = trackNum.code,
                 onChange = { data -> trackNum = trackNum.copy(code = data) },
@@ -111,10 +117,8 @@ fun UserLoginForm(
 
             Button(
                 onClick = {
-                    if (!checkTrackingNum(trackNum, context) == false){
-                        trackNum = TrackNum()
-                        PageUser()
-                    }
+                    PageUser(trackNum.code)
+                    trackNum = TrackNum()
                 },
                 enabled = trackNum.isNotEmpty(),
                 shape = RoundedCornerShape(5.dp),
@@ -125,34 +129,14 @@ fun UserLoginForm(
 
             Spacer(modifier = Modifier.height(50.dp))
 
+
             AdminButton(
                 onClick = LoginAdmin
             )
-
-
         }
     }
 }
 
-fun checkTrackingNum(
-    num: TrackNum,
-    context: Context
-): Boolean {
-    if (num.isNotEmpty() && num.code == "admin") {
-        return true
-    } else {
-        Toast.makeText(context, "Wrong Credentials", Toast.LENGTH_SHORT).show()
-        return false
-    }
-}
-
-data class TrackNum(
-    var code: String = "",  //Get Tracking Number from database?
-) {
-    fun isNotEmpty(): Boolean {
-        return code.isNotEmpty()
-    }
-}
 
 @Composable
 fun TrackingNumberField(

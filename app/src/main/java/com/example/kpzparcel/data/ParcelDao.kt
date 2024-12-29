@@ -13,4 +13,7 @@ interface ParcelDao {
 
     @Query("SELECT * FROM parcel_table ORDER BY customerName ASC")
     fun allParcels(): LiveData<List<Parcel>>  // Renamed method
+
+    @Query("SELECT * FROM parcel_table WHERE trackingNumber = :trackingNumber")
+    suspend fun getParcelByTrackingNumber(trackingNumber: String): Parcel?
 }

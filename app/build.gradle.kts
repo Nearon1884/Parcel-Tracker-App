@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.espresso.core)
     implementation(libs.transport.runtime)
+    implementation(libs.androidx.runtime.livedata)
 
     // JUnit for unit testing
     testImplementation(libs.junit)

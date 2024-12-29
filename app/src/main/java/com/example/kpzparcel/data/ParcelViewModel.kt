@@ -3,6 +3,7 @@ package com.example.kpzparcel.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.kpzparcel.data.Parcel
 import com.example.kpzparcel.data.ParcelRepository
@@ -23,7 +24,11 @@ class ParcelViewModel(application: Application) : AndroidViewModel(application) 
         // Get all parcels from the repository
         allParcels = repository.allParcels
     }
-
+    fun getParcelByTrackingNumber(trackingNumber: String): LiveData<Parcel?> {
+        return liveData {
+            emit(repository.getParcelByTrackingNumber(trackingNumber))
+        }
+    }
     // Function to add a parcel to the database
     fun addParcel(parcel: Parcel) {
         // Launch a coroutine to add a parcel asynchronously

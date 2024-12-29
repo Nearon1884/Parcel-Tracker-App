@@ -26,7 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.kpzparcel.ui.AddParcelForm
-import com.example.kpzparcel.ui.AdminButton
+
 import com.example.kpzparcel.ui.AdminLoginForm
 import com.example.kpzparcel.ui.AdminPage
 import com.example.kpzparcel.ui.UserLoginForm
@@ -45,13 +45,13 @@ fun ParcelApp(
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = ParcelNavigation.valueOf(
-        backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
-    )
+    // Use the current route directly instead of using enum for dynamic route
+    val currentRoute = backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
+
     Scaffold(
         topBar = {
             ParcelAppBar(
-                currentScreen = currentScreen,
+                currentRoute = currentRoute,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
@@ -62,18 +62,25 @@ fun ParcelApp(
             navController = navController,
             startDestination = ParcelNavigation.UserLogin.name,
             modifier = Modifier.padding(innerPadding)
-        ){
+        ) {
             composable(route = ParcelNavigation.UserLogin.name) {
                 UserLoginForm(
                     LoginAdmin = {
                         navController.navigate(ParcelNavigation.AdminLogin.name)
                     },
 
-                    PageUser = {
-                        navController.navigate(ParcelNavigation.UserPage.name)
-                    }
+                    PageUser = { trackingNumber ->
 
+                        navController.navigate("userPage/$trackingNumber")
+                    }
                 )
+            }
+
+            composable(route = "userPage/{trackingNumber}") { backStackEntry ->
+
+                val trackingNumber = backStackEntry.arguments?.getString("trackingNumber") ?: ""
+
+                UserPage(trackingNumber = trackingNumber)
             }
 
             composable(route = ParcelNavigation.AdminLogin.name) {
@@ -82,10 +89,6 @@ fun ParcelApp(
                         navController.navigate(ParcelNavigation.AdminPage.name)
                     }
                 )
-            }
-
-            composable(route = ParcelNavigation.UserPage.name) {
-                UserPage()
             }
 
             composable(route = ParcelNavigation.AdminPage.name) {
@@ -99,7 +102,6 @@ fun ParcelApp(
             composable(route = ParcelNavigation.AddParcel.name) {
                 AddParcelForm()
             }
-
         }
     }
 }
@@ -107,13 +109,13 @@ fun ParcelApp(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParcelAppBar(
-    currentScreen: ParcelNavigation,
+    currentRoute: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(currentRoute) },  // Use the route name directly here
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
