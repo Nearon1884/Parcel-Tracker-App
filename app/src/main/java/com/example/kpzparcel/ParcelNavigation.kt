@@ -46,7 +46,12 @@ fun ParcelApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Use the current route directly instead of using enum for dynamic route
-    val currentRoute = backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
+//    val currentRoute = backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
+
+    val currentRoute = when {
+        backStackEntry?.destination?.route?.startsWith("userPage/") == true -> "Your Parcel"
+        else -> backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
+    }
 
     Scaffold(
         topBar = {
@@ -76,7 +81,7 @@ fun ParcelApp(
                 )
             }
 
-            composable(route = "userPage/{trackingNumber}") { backStackEntry ->
+            composable(route =  "userPage/{trackingNumber}") { backStackEntry ->
 
                 val trackingNumber = backStackEntry.arguments?.getString("trackingNumber") ?: ""
 
