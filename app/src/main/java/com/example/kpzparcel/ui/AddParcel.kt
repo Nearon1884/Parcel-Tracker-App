@@ -33,6 +33,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import java.io.ByteArrayOutputStream
 import java.util.Date
+import com.journeyapps.barcodescanner.ScanOptions
+import com.journeyapps.barcodescanner.ScanContract
 
 @Composable
 fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
@@ -55,6 +57,15 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                 MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
             }
             selectedImageBitmap = bitmap
+        }
+    }
+
+
+    val qrScannerLauncher = rememberLauncherForActivityResult(
+        contract = ScanContract()
+    ) { result ->
+        if (result.contents != null) {
+            trackingNumber = result.contents
         }
     }
 
@@ -128,9 +139,17 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(5.dp))
 
             Button(
-                onClick = {}, /*TODO*/
+                onClick = {
+                    val options = ScanOptions()
+                    options.setPrompt("Scan a QR Code")
+                    options.setBeepEnabled(true)
+                    options.setBarcodeImageEnabled(true)
+                    qrScannerLauncher.launch(options)
+                },
                 shape = RoundedCornerShape(5.dp),
-                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth()
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
             ) {
                 Text("Scan Barcode/QR Code")
             }
@@ -174,6 +193,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
