@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import com.example.kpzparcel.data.Parcel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import java.io.ByteArrayOutputStream
 import java.util.Date
 
@@ -104,10 +106,11 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                 onClick = { imagePickerLauncher.launch("image/*") },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Choose Image")
+                Text("Add Parcel Photo")
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
             OutlinedTextField(
                 value = customerName,
                 onValueChange = { customerName = it },
@@ -121,6 +124,16 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                 label = { Text("Tracking Number") },
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Button(
+                onClick = {}, /*TODO*/
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth()
+            ) {
+                Text("Scan Barcode/QR Code")
+            }
 
             if (errorMessage.isNotEmpty()) {
                 Text(
@@ -159,5 +172,13 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                 Text("Submit")
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AddParcelFormPreview() {
+    KPZParcelTheme {
+        AddParcelForm()
     }
 }
