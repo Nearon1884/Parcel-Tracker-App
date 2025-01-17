@@ -55,6 +55,8 @@ import com.example.kpzparcel.viewmodel.ParcelViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun AdminPage(
@@ -62,13 +64,13 @@ fun AdminPage(
     viewModel: ParcelViewModel = viewModel(),
     navController: NavHostController
 ) {
-    // Observe the LiveData from the viewModel
+
     val parcels by viewModel.allParcels.observeAsState(initial = emptyList<Parcel>())
 
     Column(
-        modifier = Modifier.fillMaxSize() // The outer Column takes up the full screen
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Inner Column containing the main content
+
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -142,7 +144,7 @@ fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: Parce
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = parcel.date.toString(),
+                text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(parcel.date),
                 modifier = Modifier.weight(1.5f)
             )
             Column(

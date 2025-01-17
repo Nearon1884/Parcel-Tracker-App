@@ -38,7 +38,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.journeyapps.barcodescanner.ScanContract
 
 @Composable
-fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
+fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> Unit) {
     var customerName by remember { mutableStateOf("") }
     var trackingNumber by remember { mutableStateOf("") }
     var selectedImageBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -186,6 +186,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                             imageByteArray = imageByteArray
                         )
                         viewModel.addParcel(parcel)
+                        onAddComplete()
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -200,7 +201,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
 fun EditParcelForm(
     parcel: Parcel,
     viewModel: ParcelViewModel = viewModel(),
-    onEditComplete: () -> Unit // Callback after successful editing
+    onEditComplete: () -> Unit
 ) {
     var customerName by remember { mutableStateOf(parcel.customerName) }
     var trackingNumber by remember { mutableStateOf(parcel.trackingNumber) }
@@ -336,10 +337,3 @@ fun EditParcelForm(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AddParcelFormPreview() {
-    KPZParcelTheme {
-        AddParcelForm()
-    }
-}

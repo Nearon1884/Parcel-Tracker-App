@@ -56,6 +56,7 @@ fun ParcelApp(
 
     val currentRoute = when {
         backStackEntry?.destination?.route?.startsWith("userPage/") == true -> "Your Parcel"
+        backStackEntry?.destination?.route?.startsWith("editParcel/") == true -> "Edit Parcel"
         else -> backStackEntry?.destination?.route ?: ParcelNavigation.UserLogin.name
     }
 
@@ -91,7 +92,11 @@ fun ParcelApp(
 
                 val trackingNumber = backStackEntry.arguments?.getString("trackingNumber") ?: ""
 
-                UserPage(trackingNumber = trackingNumber)
+                UserPage(
+                    trackingNumber = trackingNumber,
+
+
+                )
             }
             composable(route = "editParcel/{trackingNumber}") { backStackEntry ->
                 val trackingNumber = backStackEntry.arguments?.getString("trackingNumber") ?: ""
@@ -135,7 +140,7 @@ fun ParcelApp(
 
 
             composable(route = ParcelNavigation.AddParcel.name) {
-                AddParcelForm()
+                AddParcelForm(onAddComplete = { navController.popBackStack() })
             }
         }
     }
