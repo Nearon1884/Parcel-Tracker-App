@@ -46,6 +46,9 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun UserPage(trackingNumber: String,viewModel: ParcelViewModel = viewModel()) {
@@ -65,52 +68,17 @@ fun UserPage(trackingNumber: String,viewModel: ParcelViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().padding(vertical = 40.dp)
     ) {
-        Text(
-            text = "Your parcel is ready to be collected!",
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 40.sp,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.SemiBold,
-                fontStyle = FontStyle.Italic,
-                lineHeight = 40.sp,
-            ),
-            modifier = Modifier.padding(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
 
 
         ParcelDetails(trackingNumber = trackingNumber, viewModel = viewModel)
 
-        Text(
-            text = trackingNumber,
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 25.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.SemiBold,
-                fontStyle = FontStyle.Italic,
-                lineHeight = 40.sp,
-            ),
-            modifier = Modifier.padding(10.dp)
-        )
+
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
 
-        Text(
-            text = "Please collect by 30/10/24 to avoid extra charges", // Modify as needed
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                lineHeight = 40.sp,
-            ),
-            modifier = Modifier.padding(20.dp)
-        )
+
 
 
     }
@@ -122,9 +90,28 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
     val parcel by viewModel.getParcelByTrackingNumber(trackingNumber).observeAsState()
 
     parcel?.let {
-        Column {
-            Text("Parcel Name: ${it.customerName}")
-            Text("Parcel Date: ${it.date}")
+        Column (modifier = Modifier.padding(10.dp)){
+            Text(
+                text = "Your parcel is ready to be collected!",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 40.sp,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.SemiBold,
+                    fontStyle = FontStyle.Italic,
+                    lineHeight = 40.sp,
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text("Customer Name: ${it.customerName}")
+            Text(
+                text = "Parcel Date: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it.date)}",
+
+            )
+
             Text("Tracking Number: ${it.trackingNumber}")
             it.imageByteArray?.let {
                 val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
@@ -135,9 +122,51 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                     modifier = Modifier.size(200.dp).align(alignment = Alignment.CenterHorizontally)
                 )
             }
+            Text(
+                text = trackingNumber,
+                textAlign = TextAlign.Center,
+
+                style = TextStyle(
+                    fontSize = 25.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.SemiBold,
+                    fontStyle = FontStyle.Italic,
+                    lineHeight = 40.sp,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth() // Makes the Text occupy the full width
+                    .padding(10.dp)
+            )
+            val calendar = Calendar.getInstance().apply {
+                time = it.date
+                add(Calendar.DAY_OF_YEAR, 3)
+            }
+            val collectByDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
+
+            Text(
+                text = "Please collect by $collectByDate to avoid extra charges",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 40.sp,
+                ),
+                modifier = Modifier.padding(20.dp)
+            )
         }
     } ?: run {
-        Text("Parcel not found")
+        Text(
+            text = "Parcel not found",
+            textAlign = TextAlign.Center,
+            style = TextStyle(
+                fontSize = 40.sp,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.SemiBold,
+                fontStyle = FontStyle.Italic,
+                lineHeight = 40.sp,
+            ),
+            modifier = Modifier.padding(10.dp))
     }
 }
 
