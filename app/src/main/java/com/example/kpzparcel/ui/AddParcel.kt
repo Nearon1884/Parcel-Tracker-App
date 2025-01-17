@@ -144,6 +144,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
                     options.setPrompt("Scan a QR Code")
                     options.setBeepEnabled(true)
                     options.setBarcodeImageEnabled(true)
+                    options.setOrientationLocked(true)
                     qrScannerLauncher.launch(options)
                 },
                 shape = RoundedCornerShape(5.dp),

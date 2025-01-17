@@ -13,4 +13,5 @@ data class Parcel(
     val trackingNumber: String,
     val date: Date,
     val imageByteArray: ByteArray // Store image as a byte array
+
 )

@@ -16,4 +16,5 @@ interface ParcelDao {
 
     @Query("SELECT * FROM parcel_table WHERE trackingNumber = :trackingNumber")
     suspend fun getParcelByTrackingNumber(trackingNumber: String): Parcel?
+
 }
