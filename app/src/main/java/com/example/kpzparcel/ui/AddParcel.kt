@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import com.example.kpzparcel.R
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import com.example.kpzparcel.data.Parcel
@@ -36,16 +37,19 @@ import java.io.ByteArrayOutputStream
 import java.util.Date
 import com.journeyapps.barcodescanner.ScanOptions
 import com.journeyapps.barcodescanner.ScanContract
+import java.io.File
 
 @Composable
-fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> Unit) {
+fun AddParcelForm(viewModel: ParcelViewModel = viewModel(), onAddComplete: () -> Unit) {
     var customerName by remember { mutableStateOf("") }
     var trackingNumber by remember { mutableStateOf("") }
     var selectedImageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var errorMessage by remember { mutableStateOf("") }
-
     val context = LocalContext.current
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
+    val showImageOptionsDialog = remember { mutableStateOf(false) }
 
+    // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -61,13 +65,40 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
         }
     }
 
+    // Camera launcher
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            imageUri.value?.let { uri ->
+                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(context.contentResolver, uri)
+                    )
+                } else {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                }
+                selectedImageBitmap = bitmap
+            }
+        }
+    }
 
+    // QR scanner launcher
     val qrScannerLauncher = rememberLauncherForActivityResult(
         contract = ScanContract()
     ) { result ->
         if (result.contents != null) {
             trackingNumber = result.contents
         }
+    }
+
+    // Temporary URI for the captured image
+    val tempImageUri = remember {
+        FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            File(context.cacheDir, "temp_image.jpg")
+        )
     }
 
     Surface {
@@ -91,6 +122,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
                 modifier = Modifier.padding(10.dp)
             )
 
+            // Image section
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -114,8 +146,35 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
                 }
             }
 
+            // Dialog to choose whether to open gallery or take a picture
+            if (showImageOptionsDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showImageOptionsDialog.value = false },
+                    title = { Text("Select Image Option") },
+                    text = {
+                        Column {
+                            TextButton(onClick = {
+                                imagePickerLauncher.launch("image/*")
+                                showImageOptionsDialog.value = false
+                            }) {
+                                Text("Choose from Gallery")
+                            }
+                            TextButton(onClick = {
+                                cameraLauncher.launch(tempImageUri)
+                                showImageOptionsDialog.value = false
+                            }) {
+                                Text("Take a Picture")
+                            }
+                        }
+                    },
+                    confirmButton = {},
+                    dismissButton = {},
+                )
+            }
+
+            // Single button to show image options
             Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
+                onClick = { showImageOptionsDialog.value = true },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Add Parcel Photo")
@@ -123,13 +182,17 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Customer Name field
             OutlinedTextField(
                 value = customerName,
                 onValueChange = { customerName = it },
                 label = { Text("Customer Name") },
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(10.dp))
+
+            // Tracking Number field
             OutlinedTextField(
                 value = trackingNumber,
                 onValueChange = { trackingNumber = it },
@@ -139,6 +202,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            // QR Code scanner
             Button(
                 onClick = {
                     val options = ScanOptions()
@@ -166,6 +230,8 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
+            // Submit button
             Button(
                 onClick = {
                     if (customerName.isBlank() || trackingNumber.isBlank() || selectedImageBitmap == null) {
@@ -186,7 +252,7 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(),onAddComplete: () -> 
                             imageByteArray = imageByteArray
                         )
                         viewModel.addParcel(parcel)
-                        onAddComplete()
+                        onAddComplete() // Callback after adding the parcel
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -213,6 +279,8 @@ fun EditParcelForm(
     var errorMessage by remember { mutableStateOf("") }
 
     val context = LocalContext.current
+
+    // Launcher for picking image from gallery
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -227,6 +295,28 @@ fun EditParcelForm(
             selectedImageBitmap = bitmap
         }
     }
+
+    // Launcher for capturing image with the camera
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            val bitmap = selectedImageBitmap // bitmap is already updated after capture
+            selectedImageBitmap = bitmap
+        }
+    }
+
+    // Temporary URI for the captured image
+    val tempImageUri = remember {
+        FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            File(context.cacheDir, "temp_image.jpg")
+        )
+    }
+
+    // A single button that allows the user to choose between gallery or camera
+    val showImageOptionsDialog = remember { mutableStateOf(false) }
 
     Surface {
         Column(
@@ -272,8 +362,35 @@ fun EditParcelForm(
                 }
             }
 
+            // Dialog to choose whether to open gallery or take a picture
+            if (showImageOptionsDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showImageOptionsDialog.value = false },
+                    title = { Text("Select Image Option") },
+                    text = {
+                        Column {
+                            TextButton(onClick = {
+                                imagePickerLauncher.launch("image/*")
+                                showImageOptionsDialog.value = false
+                            }) {
+                                Text("Choose from Gallery")
+                            }
+                            TextButton(onClick = {
+                                takePictureLauncher.launch(tempImageUri)
+                                showImageOptionsDialog.value = false
+                            }) {
+                                Text("Take a Picture")
+                            }
+                        }
+                    },
+                    confirmButton = {},
+                    dismissButton = {},
+                )
+            }
+
+            // Single button to show image options
             Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
+                onClick = { showImageOptionsDialog.value = true },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Change Parcel Photo")
@@ -307,6 +424,7 @@ fun EditParcelForm(
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 onClick = {
                     if (customerName.isBlank() || trackingNumber.isBlank() || selectedImageBitmap == null) {
@@ -336,4 +454,3 @@ fun EditParcelForm(
         }
     }
 }
-
