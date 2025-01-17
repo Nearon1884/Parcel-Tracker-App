@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.kpzparcel.data.Parcel
 import com.example.kpzparcel.data.ParcelRepository
 import com.example.kpzparcel.data.ParcelDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ParcelViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,6 +35,12 @@ class ParcelViewModel(application: Application) : AndroidViewModel(application) 
         // Launch a coroutine to add a parcel asynchronously
         viewModelScope.launch {
             repository.addParcel(parcel)
+        }
+    }
+
+    fun deleteParcel(parcel: Parcel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteParcel(parcel) // Replace with your actual delete logic
         }
     }
 }

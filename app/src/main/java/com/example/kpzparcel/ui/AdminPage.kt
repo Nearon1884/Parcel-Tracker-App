@@ -122,7 +122,7 @@ fun AdminPage(
 }
 
 @Composable
-fun ParcelRow(parcel: Parcel) {
+fun ParcelRow(parcel: Parcel, viewModel: ParcelViewModel = viewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -160,7 +160,7 @@ fun ParcelRow(parcel: Parcel) {
 
         Row{
             Button(
-                onClick = {}, /*TODO*/
+                onClick = {viewModel.deleteParcel(parcel)}, /*TODO*/
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier.padding(5.dp)
             ) {
