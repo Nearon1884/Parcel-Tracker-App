@@ -53,11 +53,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @Composable
 fun AdminPage(
     ParcelPage: () -> Unit = {},
-    viewModel: ParcelViewModel = viewModel()
+    viewModel: ParcelViewModel = viewModel(),
+    navController: NavHostController
 ) {
     // Observe the LiveData from the viewModel
     val parcels by viewModel.allParcels.observeAsState(initial = emptyList<Parcel>())
@@ -93,7 +96,6 @@ fun AdminPage(
 
         Row(
             horizontalArrangement = Arrangement.Center,
-
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.LightGray)
@@ -115,14 +117,15 @@ fun AdminPage(
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(parcels) { parcel ->
-                ParcelRow(parcel)
+                ParcelRow(parcel, navController)
             }
         }
     }
 }
 
+
 @Composable
-fun ParcelRow(parcel: Parcel, viewModel: ParcelViewModel = viewModel()) {
+fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: ParcelViewModel = viewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -158,9 +161,9 @@ fun ParcelRow(parcel: Parcel, viewModel: ParcelViewModel = viewModel()) {
             }
         }
 
-        Row{
+        Row {
             Button(
-                onClick = {viewModel.deleteParcel(parcel)}, /*TODO*/
+                onClick = { viewModel.deleteParcel(parcel) },
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier.padding(5.dp)
             ) {
@@ -168,16 +171,16 @@ fun ParcelRow(parcel: Parcel, viewModel: ParcelViewModel = viewModel()) {
             }
 
             Button(
-                onClick = {}, /*TODO*/
+                onClick = {
+                    navController.navigate("editParcel/${parcel.trackingNumber}")
+                },
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier.padding(5.dp)
-
             ) {
                 Text("Edit")
             }
         }
     }
-
 }
 
 @Composable
@@ -194,10 +197,3 @@ fun AddParcelButton(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AdminPagePreview() {
-    KPZParcelTheme {
-        AdminPage()
-    }
-}

@@ -43,4 +43,9 @@ class ParcelViewModel(application: Application) : AndroidViewModel(application) 
             repository.deleteParcel(parcel) // Replace with your actual delete logic
         }
     }
+    fun updateParcel(parcel: Parcel) {
+        viewModelScope.launch {
+            repository.updateParcel(parcel)
+        }
+    }
 }

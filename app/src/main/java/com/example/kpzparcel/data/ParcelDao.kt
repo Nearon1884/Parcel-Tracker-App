@@ -22,4 +22,6 @@ interface ParcelDao {
     suspend fun delete(parcel: Parcel)
 
 
+    @androidx.room.Update  // Add this annotation
+    suspend fun update(parcel: Parcel)
 }

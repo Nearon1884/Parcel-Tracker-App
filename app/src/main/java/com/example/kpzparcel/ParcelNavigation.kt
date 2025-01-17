@@ -16,10 +16,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,8 +32,10 @@ import com.example.kpzparcel.ui.AddParcelForm
 
 import com.example.kpzparcel.ui.AdminLoginForm
 import com.example.kpzparcel.ui.AdminPage
+import com.example.kpzparcel.ui.EditParcelForm
 import com.example.kpzparcel.ui.UserLoginForm
 import com.example.kpzparcel.ui.UserPage
+import com.example.kpzparcel.viewmodel.ParcelViewModel
 
 enum class ParcelNavigation(@StringRes val title: Int) {
     UserLogin(title = R.string.app_name),
@@ -38,6 +43,7 @@ enum class ParcelNavigation(@StringRes val title: Int) {
     UserPage(title = R.string.user_page),
     AdminPage(title = R.string.admin_page),
     AddParcel(title = R.string.add_parcel),
+    EditParcel(title = R.string.edit_parcel),
 }
 
 @Composable
@@ -87,6 +93,28 @@ fun ParcelApp(
 
                 UserPage(trackingNumber = trackingNumber)
             }
+            composable(route = "editParcel/{trackingNumber}") { backStackEntry ->
+                val trackingNumber = backStackEntry.arguments?.getString("trackingNumber") ?: ""
+                val viewModel: ParcelViewModel = viewModel()
+
+                val parcel by viewModel.getParcelByTrackingNumber(trackingNumber).observeAsState()
+
+                parcel?.let {
+                    EditParcelForm(
+                        parcel = it,
+                        viewModel = viewModel,
+                        onEditComplete = { navController.popBackStack() } // Navigate back after saving
+                    )
+                } ?: run {
+                    // Handle null parcel (e.g., invalid tracking number or not found)
+                    Text(
+                        text = "Parcel not found",
+
+                        modifier = Modifier.fillMaxSize().padding(16.dp)
+                    )
+                }
+            }
+
 
             composable(route = ParcelNavigation.AdminLogin.name) {
                 AdminLoginForm(
@@ -100,9 +128,11 @@ fun ParcelApp(
                 AdminPage(
                     ParcelPage = {
                         navController.navigate(ParcelNavigation.AddParcel.name)
-                    }
+                    },
+                    navController = navController
                 )
             }
+
 
             composable(route = ParcelNavigation.AddParcel.name) {
                 AddParcelForm()

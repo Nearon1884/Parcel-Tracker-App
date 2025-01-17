@@ -17,4 +17,8 @@ class ParcelRepository(private val parcelDao: ParcelDao) {
     suspend fun deleteParcel(parcel: Parcel) {
         parcelDao.delete(parcel)
     }
+
+    suspend fun updateParcel(parcel: Parcel) {
+        parcelDao.update(parcel)
+    }
 }

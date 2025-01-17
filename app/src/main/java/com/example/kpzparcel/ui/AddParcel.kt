@@ -1,6 +1,7 @@
 package com.example.kpzparcel.ui
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -195,6 +196,145 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel()) {
     }
 }
 
+@Composable
+fun EditParcelForm(
+    parcel: Parcel,
+    viewModel: ParcelViewModel = viewModel(),
+    onEditComplete: () -> Unit // Callback after successful editing
+) {
+    var customerName by remember { mutableStateOf(parcel.customerName) }
+    var trackingNumber by remember { mutableStateOf(parcel.trackingNumber) }
+    var selectedImageBitmap by remember {
+        mutableStateOf(parcel.imageByteArray?.let {
+            BitmapFactory.decodeByteArray(it, 0, it.size)
+        })
+    }
+    var errorMessage by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(
+                    ImageDecoder.createSource(context.contentResolver, uri)
+                )
+            } else {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+            }
+            selectedImageBitmap = bitmap
+        }
+    }
+
+    Surface {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 30.dp)
+        ) {
+            Text(
+                text = "Edit Parcel",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 50.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.SemiBold,
+                    fontStyle = FontStyle.Italic,
+                    lineHeight = 50.sp,
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(120.dp)
+                    .padding(16.dp)
+            ) {
+                selectedImageBitmap?.let { bitmap ->
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Selected Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(100.dp)
+                    )
+                } ?: run {
+                    Image(
+                        painter = painterResource(R.drawable.box),
+                        contentDescription = "Default Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
+            }
+
+            Button(
+                onClick = { imagePickerLauncher.launch("image/*") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Change Parcel Photo")
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = customerName,
+                onValueChange = { customerName = it },
+                label = { Text("Customer Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = trackingNumber,
+                onValueChange = { trackingNumber = it },
+                label = { Text("Tracking Number") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = TextStyle(fontSize = 14.sp),
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = {
+                    if (customerName.isBlank() || trackingNumber.isBlank() || selectedImageBitmap == null) {
+                        errorMessage = "Please fill in all fields."
+                    } else {
+                        errorMessage = ""
+                        val imageByteArray = selectedImageBitmap?.let { bitmap ->
+                            val outputStream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                            outputStream.toByteArray()
+                        } ?: ByteArray(0)
+
+                        val updatedParcel = parcel.copy(
+                            customerName = customerName,
+                            trackingNumber = trackingNumber,
+                            imageByteArray = imageByteArray
+                        )
+
+                        viewModel.updateParcel(updatedParcel)
+                        onEditComplete() // Notify that editing is complete
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Save Changes")
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

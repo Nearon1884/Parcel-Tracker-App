@@ -6,6 +6,7 @@
     <string name="user_page">User Page</string>
     <string name="add_parcel">Add Parcel</string>
     <string name="back_button">Back</string>
+    <string name="edit_parcel">Edit Parcel</string>
 
 
 </resources>
