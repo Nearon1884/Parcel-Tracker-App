@@ -89,7 +89,7 @@ fun UserLoginForm(
                     lineHeight = 50.sp,
                     color = Color(0xFF6D5E0F)
                 ),
-                modifier = Modifier.padding(10.dp)
+
             )
 
             Image(

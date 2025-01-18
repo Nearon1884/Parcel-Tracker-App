@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,14 +88,12 @@ fun UserPage(trackingNumber: String,viewModel: ParcelViewModel = viewModel()) {
 
     }
 }
-
 @Composable
 fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel()) {
-
     val parcel by viewModel.getParcelByTrackingNumber(trackingNumber).observeAsState()
 
     parcel?.let {
-        Column (modifier = Modifier.padding(10.dp)){
+        Column() {
             Text(
                 text = "Your parcel is ready to be collected!",
                 textAlign = TextAlign.Center,
@@ -101,47 +101,48 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                     fontSize = 45.sp,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
                     color = Color(0xFF6D5E0F)
                 ),
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(bottom=10.dp)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Customer Name: ${it.customerName}" ,
+                text = "Customer Name: ${it.customerName}",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = Montserrat,
-                    //fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
                 ),
-                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(5.dp)
+                    .align(Alignment.CenterHorizontally)
             )
+
             Text(
                 text = "Parcel Date: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it.date)}",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = Montserrat,
-                    //fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
                 ),
-                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(5.dp)
+                    .align(Alignment.CenterHorizontally)
             )
+
             Text(
                 text = "Tracking Number: ${it.trackingNumber}",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = Montserrat,
-                    //fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
                 ),
-                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(5.dp)
+                    .align(Alignment.CenterHorizontally)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -152,25 +153,25 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = "Parcel Image",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(200.dp).align(alignment = Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .size(200.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
             }
 
             Text(
                 text = trackingNumber,
                 textAlign = TextAlign.Center,
-
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = BasicRegular,
-                    //fontWeight = FontWeight.SemiBold,
-                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
                 ),
                 modifier = Modifier
-                    .fillMaxWidth() // Makes the Text occupy the full width
+                    .fillMaxWidth()
                     .padding(10.dp)
             )
+
             val calendar = Calendar.getInstance().apply {
                 time = it.date
                 add(Calendar.DAY_OF_YEAR, 3)
@@ -179,20 +180,32 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = "Please collect by $collectByDate to avoid extra charges",
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 30.sp,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
-                    lineHeight = 40.sp,
-                    color = Color(0xFFBA1A1A)
+            // Updated "Please collect by" text
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Please collect by $collectByDate to avoid extra charges",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 30.sp,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 40.sp,
+                        color = Color(0xFFBA1A1A)
+                    ),
+                    maxLines = Int.MAX_VALUE,
+                    overflow = TextOverflow.Visible,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                )
+            }
 
-                ),
-                modifier = Modifier.padding(10.dp)
-            )
+
         }
     } ?: run {
         Text(
@@ -202,7 +215,6 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                 fontSize = 40.sp,
                 fontFamily = Montserrat,
                 fontWeight = FontWeight.Bold,
-                //fontStyle = FontStyle.Italic,
                 lineHeight = 40.sp,
                 color = Color(0xFFBA1A1A)
             ),
@@ -210,6 +222,7 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
         )
     }
 }
+
 
 
 @Preview(showBackground = true)

@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -67,6 +68,7 @@ import com.example.kpzparcel.ui.theme.DotGothic
 import com.example.kpzparcel.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.foundation.layout.Box
 
 @Composable
 fun AdminPage(
@@ -74,78 +76,89 @@ fun AdminPage(
     viewModel: ParcelViewModel = viewModel(),
     navController: NavHostController
 ) {
-
     val parcels by viewModel.allParcels.observeAsState(initial = emptyList<Parcel>())
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Available Parcel",
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 40.sp,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    //fontStyle = FontStyle.Italic,
-                    lineHeight = 40.sp,
-                    color = Color(0xFF6D5E0F)
-                ),
-                modifier = Modifier.padding(10.dp)
-            )
-            AddParcelButton2 (
-                onClick = ParcelPage
-            )
-        }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top=20.dp, bottom = 20.dp)
+            ) {
+                Text(
+                    text = "Available Parcel",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 40.sp,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 40.sp,
+                        color = Color(0xFF6D5E0F)
+                    ),
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFFFECA2))
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "NAME",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "DATE",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "IMAGE/CODE",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-        }
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(parcels) { parcel ->
-                ParcelRow(parcel, navController)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFFFECA2))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "NAME",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "DATE",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "IMAGE/CODE",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(parcels) { parcel ->
+                    ParcelRow(parcel, navController)
+                }
             }
         }
 
+
+        AddParcelButton2(
+            onClick = ParcelPage,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
     }
 }
 
+
 @Composable
-fun AddParcelButton2(onClick: () -> Unit) {
-    ExtendedFloatingActionButton(
+fun AddParcelButton2(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FloatingActionButton(
         onClick = { onClick() },
-        icon = { Icon(Icons.Filled.Add, "Extended floating action button.") },
-        text = { Text(text = "Add Parcel") },
-    )
+        modifier = modifier
+    ) {
+        Icon(Icons.Filled.Add, contentDescription = "Add Parcel")
+    }
 }
+
 
 @Composable
 fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: ParcelViewModel = viewModel()) {
