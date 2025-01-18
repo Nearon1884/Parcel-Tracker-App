@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,8 @@ import com.example.kpzparcel.R
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kpzparcel.ui.theme.BasicRegular
+import com.example.kpzparcel.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -95,24 +98,54 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                 text = "Your parcel is ready to be collected!",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 40.sp,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.SemiBold,
-                    fontStyle = FontStyle.Italic,
+                    fontSize = 45.sp,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
+                    color = Color(0xFF6D5E0F)
                 ),
                 modifier = Modifier.padding(10.dp)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text("Customer Name: ${it.customerName}")
+            Text(
+                text = "Customer Name: ${it.customerName}" ,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = Montserrat,
+                    //fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
+                ),
+                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
+            )
             Text(
                 text = "Parcel Date: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it.date)}",
-
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = Montserrat,
+                    //fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
+                ),
+                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
+            )
+            Text(
+                text = "Tracking Number: ${it.trackingNumber}",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = Montserrat,
+                    //fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
+                ),
+                modifier = Modifier.padding(5.dp).align(alignment = Alignment.CenterHorizontally)
             )
 
-            Text("Tracking Number: ${it.trackingNumber}")
+            Spacer(modifier = Modifier.height(10.dp))
+
             it.imageByteArray?.let {
                 val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
                 Image(
@@ -122,15 +155,16 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
                     modifier = Modifier.size(200.dp).align(alignment = Alignment.CenterHorizontally)
                 )
             }
+
             Text(
                 text = trackingNumber,
                 textAlign = TextAlign.Center,
 
                 style = TextStyle(
-                    fontSize = 25.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.SemiBold,
-                    fontStyle = FontStyle.Italic,
+                    fontSize = 20.sp,
+                    fontFamily = BasicRegular,
+                    //fontWeight = FontWeight.SemiBold,
+                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
                 ),
                 modifier = Modifier
@@ -143,30 +177,37 @@ fun ParcelDetails(trackingNumber: String, viewModel: ParcelViewModel = viewModel
             }
             val collectByDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             Text(
                 text = "Please collect by $collectByDate to avoid extra charges",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 30.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.Normal,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
+                    color = Color(0xFFBA1A1A)
+
                 ),
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(10.dp)
             )
         }
     } ?: run {
         Text(
-            text = "Parcel not found",
+            text = "Parcel not found! Make sure your tracking number is valid",
             textAlign = TextAlign.Center,
             style = TextStyle(
                 fontSize = 40.sp,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.SemiBold,
-                fontStyle = FontStyle.Italic,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                //fontStyle = FontStyle.Italic,
                 lineHeight = 40.sp,
+                color = Color(0xFFBA1A1A)
             ),
-            modifier = Modifier.padding(10.dp))
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
 

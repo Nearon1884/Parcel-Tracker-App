@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -44,7 +45,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kpzparcel.R
+import com.example.kpzparcel.ui.theme.AbrilFatFace
+import com.example.kpzparcel.ui.theme.BasicRegular
+import com.example.kpzparcel.ui.theme.BebasNueue
+import com.example.kpzparcel.ui.theme.DotGothic
+import com.example.kpzparcel.ui.theme.Jersey15
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
+import com.example.kpzparcel.ui.theme.Montserrat
 
 data class TrackNum(
     var code: String = ""  // This represents the tracking number.
@@ -75,11 +82,12 @@ fun UserLoginForm(
                 text = "KPZ Parcel Management System",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 50.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 70.sp,
+                    fontFamily = Jersey15,
+                    //fontWeight = FontWeight.SemiBold,
                     fontStyle = FontStyle.Italic,
                     lineHeight = 50.sp,
+                    color = Color(0xFF6D5E0F)
                 ),
                 modifier = Modifier.padding(10.dp)
             )
@@ -98,8 +106,8 @@ fun UserLoginForm(
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 20.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = BasicRegular,
+                    //fontWeight = FontWeight.SemiBold,
                     fontStyle = FontStyle.Italic,
                     lineHeight = 50.sp,
                 ),

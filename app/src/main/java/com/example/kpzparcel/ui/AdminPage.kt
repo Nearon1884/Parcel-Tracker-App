@@ -53,8 +53,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
 import com.example.kpzparcel.viewmodel.ParcelViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.kpzparcel.ui.theme.AbrilFatFace
+import com.example.kpzparcel.ui.theme.BasicRegular
+import com.example.kpzparcel.ui.theme.BebasNueue
+import com.example.kpzparcel.ui.theme.DotGothic
+import com.example.kpzparcel.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -82,15 +92,15 @@ fun AdminPage(
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 40.sp,
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.SemiBold,
-                    fontStyle = FontStyle.Italic,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
                     lineHeight = 40.sp,
+                    color = Color(0xFF6D5E0F)
                 ),
                 modifier = Modifier.padding(10.dp)
             )
-
-            AddParcelButton(
+            AddParcelButton2 (
                 onClick = ParcelPage
             )
         }
@@ -99,7 +109,7 @@ fun AdminPage(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.LightGray)
+                .background(Color(0xFFFFECA2))
                 .padding(16.dp)
         ) {
             Text(
@@ -124,7 +134,17 @@ fun AdminPage(
                 ParcelRow(parcel, navController)
             }
         }
+
     }
+}
+
+@Composable
+fun AddParcelButton2(onClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        onClick = { onClick() },
+        icon = { Icon(Icons.Filled.Add, "Extended floating action button.") },
+        text = { Text(text = "Add Parcel") },
+    )
 }
 
 @Composable

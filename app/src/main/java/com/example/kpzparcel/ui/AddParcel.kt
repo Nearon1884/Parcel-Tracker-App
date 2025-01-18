@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +36,7 @@ import com.example.kpzparcel.viewmodel.ParcelViewModel
 import com.example.kpzparcel.data.Parcel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kpzparcel.ui.theme.KPZParcelTheme
+import com.example.kpzparcel.ui.theme.Montserrat
 import java.io.ByteArrayOutputStream
 import java.util.Date
 import com.journeyapps.barcodescanner.ScanOptions
@@ -129,11 +131,13 @@ fun AddParcelForm(viewModel: ParcelViewModel = viewModel(), onAddComplete: () ->
                 text = "Add Parcel",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 50.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.SemiBold,
-                    fontStyle = FontStyle.Italic,
-                    lineHeight = 50.sp,
+                    fontSize = 45.sp,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
+                    lineHeight = 40.sp,
+                    color = Color(0xFF6D5E0F)
+
                 ),
                 modifier = Modifier.padding(10.dp)
             )
@@ -372,11 +376,12 @@ fun EditParcelForm(
                 text = "Edit Parcel",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 50.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.SemiBold,
-                    fontStyle = FontStyle.Italic,
-                    lineHeight = 50.sp,
+                    fontSize = 45.sp,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    //fontStyle = FontStyle.Italic,
+                    lineHeight = 40.sp,
+                    color = Color(0xFF6D5E0F)
                 ),
                 modifier = Modifier.padding(10.dp)
             )
