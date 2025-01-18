@@ -70,7 +70,6 @@ fun AdminPage(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,15 +104,18 @@ fun AdminPage(
         ) {
             Text(
                 text = "NAME",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
             Text(
                 text = "DATE",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
             Text(
                 text = "IMAGE/CODE",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
         }
 
@@ -125,15 +127,15 @@ fun AdminPage(
     }
 }
 
-
 @Composable
 fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: ParcelViewModel = viewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -141,14 +143,19 @@ fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: Parce
         ) {
             Text(
                 text = parcel.customerName,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
+
             Text(
                 text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(parcel.date),
-                modifier = Modifier.weight(1.5f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
+
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
             ) {
                 parcel.imageByteArray?.let {
                     val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
@@ -159,11 +166,20 @@ fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: Parce
                         modifier = Modifier.size(100.dp)
                     )
                 }
-                Text(text = parcel.trackingNumber)
+                Text(
+                    text = parcel.trackingNumber,
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
-        Row {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
             Button(
                 onClick = { viewModel.deleteParcel(parcel) },
                 shape = RoundedCornerShape(5.dp),
@@ -184,6 +200,7 @@ fun ParcelRow(parcel: Parcel, navController: NavHostController, viewModel: Parce
         }
     }
 }
+
 
 @Composable
 fun AddParcelButton(
